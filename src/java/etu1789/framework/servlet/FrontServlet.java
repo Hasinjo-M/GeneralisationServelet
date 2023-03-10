@@ -12,7 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utilitaire.Utilitaire;
 
 
@@ -33,7 +37,7 @@ public class FrontServlet extends HttpServlet {
      */
     HashMap<String, Mapping> MappingUrls;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
@@ -50,7 +54,18 @@ public class FrontServlet extends HttpServlet {
             utilitaire.Utilitaire t = new Utilitaire();
             String[] tab = t.splitURL(request);
             for (String string : tab) {
-                 out.println("<br>"+string);
+                 //out.println("<br>"+string);
+            }
+            
+            List<String> test = t.searchClassNames("model");
+            for (String string : test) {
+                //out.println("<br>"+string);
+            }
+            
+            HashMap<String,Object> stock = t.stockage();
+            List<String> meth = (List<String>)stock.get("ListeClasse");
+            for (String method : meth) {
+                out.println("<br>"+method);
             }
         }
     }
@@ -67,7 +82,11 @@ public class FrontServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -81,7 +100,11 @@ public class FrontServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
