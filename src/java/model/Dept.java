@@ -5,7 +5,7 @@
  */
 package model;
 
-import annotion.URLannotation;
+import annotation.URLannotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,5 +21,6 @@ public class Dept {
         Employer p =  new Employer(1, "Hasinjo");
         all.add(p);
         return all;
+        
     }
 }

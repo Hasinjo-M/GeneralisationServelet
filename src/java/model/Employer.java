@@ -5,7 +5,7 @@
  */
 package model;
 
-import annotion.URLannotation;
+import annotation.URLannotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class Employer {
     int id ;
     String libelle;
     
-    @URLannotation(url = "/findall")
+    @URLannotation(url = "findall")
     public List<Employer> findAll(){
         List<Employer> all = new ArrayList<>();
         Employer p =  new Employer(1, "Hasinjo");

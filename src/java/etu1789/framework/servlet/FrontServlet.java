@@ -6,15 +6,18 @@
 package etu1789.framework.servlet;
 
 import etu1789.framework.Mapping;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utilitaire.Utilitaire;
@@ -26,6 +29,7 @@ import utilitaire.Utilitaire;
  */
 public class FrontServlet extends HttpServlet {
 
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,7 +39,9 @@ public class FrontServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    HashMap<String, Mapping> MappingUrls;
+    
+    private HashMap<String, Mapping> mappingUrls;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
@@ -54,21 +60,48 @@ public class FrontServlet extends HttpServlet {
             utilitaire.Utilitaire t = new Utilitaire();
             String[] tab = t.splitURL(request);
             for (String string : tab) {
-                 //out.println("<br>"+string);
+                out.println("<br>"+string);
             }
             
-            List<String> test = t.searchClassNames("model");
-            for (String string : test) {
-                //out.println("<br>"+string);
+            for (Map.Entry<String, Mapping> entry : mappingUrls.entrySet()) {
+                String key = entry.getKey();
+                Mapping value = entry.getValue();
+                out.print("<p>");
+                out.println("annotation = " + key + " / ");
+                out.println("class Name = " + value.getClassName() + " / ");
+                out.println("fonction Name = " + value.getMethod() + " / ");
+                out.println("</p>");
             }
             
-            HashMap<String,Object> stock = t.stockage();
-            List<String> meth = (List<String>)stock.get("ListeClasse");
-            for (String method : meth) {
-                out.println("<br>"+method);
+            
+        }
+    }
+    
+    public void init() throws ServletException {
+        ServletContext context = getServletContext();
+        String path = context.getRealPath("/");
+        System.out.println(" Mety "+path+"WEB-INF\\classes\\");
+        try{
+            
+                this.setMappingUrls( new Utilitaire().set_allMethodAnnotation(path,new File(path+"WEB-INF\\classes\\"),mappingUrls));
+            
+        }catch(Exception e){
+            try {
+                throw e;
+            } catch (Exception ex) {
+                Logger.getLogger(FrontServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+    
+    public HashMap<String, Mapping> getMappingUrls() {
+        return mappingUrls;
+    }
+
+    public void setMappingUrls(HashMap<String, Mapping> MappingUrls) {
+        this.mappingUrls = MappingUrls;
+    }
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
